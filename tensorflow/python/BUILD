@@ -15,6 +15,7 @@ load("//tensorflow:tensorflow.bzl", "cuda_py_test")
 load("//tensorflow:tensorflow.bzl", "cuda_py_tests")
 load("//tensorflow/core:platform/default/build_config.bzl", "tf_proto_library")
 load("//tensorflow/core:platform/default/build_config.bzl", "tf_proto_library_py")
+load("//tensorflow/core:platform/default/build_config.bzl", "tf_additional_lib_deps")
 
 py_library(
     name = "python",
@@ -133,7 +134,7 @@ cc_binary(
     }),
     linkshared = 1,
     deps = [
-        "//google/protobuf",
+        "@protobuf//:protobuf",
         "//tensorflow/core:framework_headers_lib",
     ],
 )
@@ -884,7 +885,7 @@ py_library(
     name = "util",
     srcs = glob(["util/**/*.py"]),
     srcs_version = "PY2AND3",
-    deps = ["//google/protobuf:protobuf_python"],
+    deps = ["@protobuf//:protobuf_python"],
 )
 
 tf_proto_library(
@@ -983,6 +984,7 @@ tf_py_wrap_cc(
         "lib/io/py_record_writer.i",
         "platform/base.i",
         "platform/numpy.i",
+        "training/saver_io.i",
         "training/server_lib.i",
         "util/port.i",
         "util/py_checkpoint_reader.i",
@@ -994,12 +996,12 @@ tf_py_wrap_cc(
         ":py_record_writer_lib",
         ":python_op_gen",
         ":tf_session_helper",
-        "//tensorflow/core:lib",
-        "//tensorflow/core/distributed_runtime:server_lib",
         "//tensorflow/core/distributed_runtime/rpc:grpc_server_lib",
         "//tensorflow/core/distributed_runtime/rpc:grpc_session",
+        "//tensorflow/core:lib",
+        "//tensorflow/core/distributed_runtime:server_lib",
         "//util/python:python_headers",
-    ],
+    ] + tf_additional_lib_deps(),
 )
 
 py_library(
@@ -1106,6 +1108,8 @@ medium_kernel_test_list = glob([
     "kernel_tests/scatter_ops_test.py",
     "kernel_tests/seq2seq_test.py",
     "kernel_tests/slice_op_test.py",
+    "kernel_tests/sparse_ops_test.py",
+    "kernel_tests/sparse_matmul_op_test.py",
     "kernel_tests/sparse_tensor_dense_matmul_op_test.py",
 ])
 
@@ -1142,7 +1146,6 @@ cpu_only_kernel_test_list = glob([
     "kernel_tests/matrix_solve_op_test.py",
     "kernel_tests/matrix_triangular_solve_op_test.py",
     "kernel_tests/matrix_solve_ls_op_test.py",
-    "kernel_tests/multinomial_op_test.py",
     "kernel_tests/mutex_ops_test.py",
     "kernel_tests/parsing_ops_test.py",
     "kernel_tests/partitioned_variables_test.py",
@@ -1153,7 +1156,6 @@ cpu_only_kernel_test_list = glob([
     "kernel_tests/self_adjoint_eig_op_test.py",
     "kernel_tests/sparse_add_op_test.py",
     "kernel_tests/sparse_concat_op_test.py",
-    "kernel_tests/sparse_matmul_op_test.py",
     "kernel_tests/sparse_split_op_test.py",
     "kernel_tests/sparse_reorder_op_test.py",
     "kernel_tests/sparse_to_dense_op_test.py",
@@ -1189,7 +1191,10 @@ cuda_py_tests(
         ["ops/*_test.py"],
         exclude = [
             "ops/image_ops_test.py",
+            "ops/nn_batchnorm_test.py",
+            "ops/nn_conv_test.py",
             "ops/nn_test.py",
+            "ops/nn_xent_test.py",
             "ops/op_def_library_test.py",
         ],
     ),
@@ -1198,7 +1203,12 @@ cuda_py_tests(
 cuda_py_tests(
     name = "medium_op_tests",
     size = "medium",
-    srcs = ["ops/nn_test.py"],
+    srcs = [
+        "ops/nn_batchnorm_test.py",
+        "ops/nn_conv_test.py",
+        "ops/nn_test.py",
+        "ops/nn_xent_test.py",
+    ],
 )
 
 cuda_py_tests(

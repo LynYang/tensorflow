@@ -17,6 +17,8 @@ filegroup(
     srcs = glob(["testdata/*"]),
 )
 
+exports_files(["ffmpeg_lib.h"])
+
 cc_library(
     name = "decode_audio_op_cc",
     srcs = ["decode_audio_op.cc"],
@@ -24,9 +26,9 @@ cc_library(
     linkstatic = 1,
     visibility = ["//visibility:private"],
     deps = [
-        "//third_party/eigen3",
-        "//tensorflow/contrib/ffmpeg/kernels:ffmpeg_lib",
+        "//tensorflow/contrib/ffmpeg/default:ffmpeg_lib",
         "//tensorflow/core:framework_headers_lib",
+        "//third_party/eigen3",
     ],
     alwayslink = 1,
 )
@@ -38,15 +40,23 @@ cc_library(
     linkstatic = 1,
     visibility = ["//visibility:private"],
     deps = [
-        "//third_party/eigen3",
-        "//tensorflow/contrib/ffmpeg/kernels:ffmpeg_lib",
+        "//tensorflow/contrib/ffmpeg/default:ffmpeg_lib",
         "//tensorflow/core:framework_headers_lib",
+        "//third_party/eigen3",
     ],
     alwayslink = 1,
 )
 
 tf_custom_op_library(
     name = "ffmpeg.so",
+    deps = [
+        ":decode_audio_op_cc",
+        ":encode_audio_op_cc",
+    ],
+)
+
+cc_library(
+    name = "ffmpeg_op_lib",
     deps = [
         ":decode_audio_op_cc",
         ":encode_audio_op_cc",
@@ -76,17 +86,13 @@ tf_py_test(
     srcs = ["decode_audio_op_test.py"],
     additional_deps = [
         ":ffmpeg_ops_py",
-        "//third_party/py/tensorflow",
+        "//tensorflow:tensorflow_py",
         "//tensorflow/python:platform",
     ],
     data = [
-        ":ffmpeg.so",
         ":test_data",
     ],
-    tags = [
-        "local",
-        "manual",
-    ],
+    tags = ["manual"],
 )
 
 tf_py_test(
@@ -94,17 +100,13 @@ tf_py_test(
     srcs = ["encode_audio_op_test.py"],
     additional_deps = [
         ":ffmpeg_ops_py",
-        "//third_party/py/tensorflow",
+        "//tensorflow:tensorflow_py",
         "//tensorflow/python:platform",
     ],
     data = [
-        ":ffmpeg.so",
         ":test_data",
     ],
-    tags = [
-        "local",
-        "manual",
-    ],
+    tags = ["manual"],
 )
 
 py_library(
@@ -113,9 +115,7 @@ py_library(
         "__init__.py",
         "ffmpeg_ops.py",
     ],
-    data = [
-        ":ffmpeg.so",
-    ],
+    data = [":ffmpeg.so"],
     srcs_version = "PY2AND3",
     deps = [
         ":decode_audio_op_py",

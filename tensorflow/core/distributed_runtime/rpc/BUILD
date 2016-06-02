@@ -324,6 +324,10 @@ cc_library(
 
 tf_cuda_cc_tests(
     size = "small",
+    linkopts = select({
+        "//tensorflow:darwin": ["-headerpad_max_install_names"],
+        "//conditions:default": [],
+    }),
     linkstatic = tf_kernel_tests_linkstatic(),
     tags = tf_cuda_tests_tags() + [],
     tests = [
@@ -337,6 +341,7 @@ tf_cuda_cc_tests(
         ":grpc_testlib",
         ":rpc_rendezvous_mgr",
         "//tensorflow/core:core_cpu",
+        "//tensorflow/core:core_cpu_internal",
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
         "//tensorflow/core:master_proto_cc",
