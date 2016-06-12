@@ -1,4 +1,3 @@
-# pylint: disable=g-bad-file-header
 # Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,10 +24,9 @@ from tensorflow.contrib.learn.python.learn.estimators import _sklearn
 from tensorflow.contrib.learn.python.learn.estimators.base import TensorFlowEstimator
 
 
-def null_input_op_fn(X):
-  # pylint: disable=invalid-name
+def null_input_op_fn(x):
   """This function does no transformation on the inputs, used as default."""
-  return X
+  return x
 
 
 class TensorFlowRNNClassifier(TensorFlowEstimator, _sklearn.ClassifierMixin):
@@ -40,7 +38,7 @@ class TensorFlowRNNClassifier(TensorFlowEstimator, _sklearn.ClassifierMixin):
     num_layers: The number of layers of the rnn model.
     input_op_fn: Function that will transform the input tensor, such as
       creating word embeddings, byte list, etc. This takes
-      an argument X for input and returns transformed X.
+      an argument x for input and returns transformed x.
     bidirectional: boolean, Whether this is a bidirectional rnn.
     sequence_length: If sequence_length is provided, dynamic calculation is
       performed. This saves computational time when unrolling past max sequence
@@ -107,22 +105,21 @@ class TensorFlowRNNClassifier(TensorFlowEstimator, _sklearn.ClassifierMixin):
         config=config,
         verbose=verbose)
 
-  def _model_fn(self, X, y):
-    # pylint: disable=invalid-name
+  def _model_fn(self, x, y):
     return models.get_rnn_model(self.rnn_size, self.cell_type, self.num_layers,
                                 self.input_op_fn, self.bidirectional,
                                 models.logistic_regression,
-                                self.sequence_length, self.initial_state)(X, y)
+                                self.sequence_length, self.initial_state)(x, y)
 
   @property
   def bias_(self):
     """Returns bias of the rnn layer."""
-    return self.get_tensor_value('logistic_regression/bias')
+    return self.get_variable_value('logistic_regression/bias')
 
   @property
   def weights_(self):
     """Returns weights of the rnn layer."""
-    return self.get_tensor_value('logistic_regression/weights')
+    return self.get_variable_value('logistic_regression/weights')
 
 
 class TensorFlowRNNRegressor(TensorFlowEstimator, _sklearn.RegressorMixin):
@@ -134,7 +131,7 @@ class TensorFlowRNNRegressor(TensorFlowEstimator, _sklearn.RegressorMixin):
     num_layers: The number of layers of the rnn model.
     input_op_fn: Function that will transform the input tensor, such as
       creating word embeddings, byte list, etc. This takes
-      an argument X for input and returns transformed X.
+      an argument x for input and returns transformed x.
     bidirectional: boolean, Whether this is a bidirectional rnn.
     sequence_length: If sequence_length is provided, dynamic calculation is
       performed. This saves computational time when unrolling past max sequence
@@ -198,19 +195,18 @@ class TensorFlowRNNRegressor(TensorFlowEstimator, _sklearn.RegressorMixin):
         config=config,
         verbose=verbose)
 
-  def _model_fn(self, X, y):
-    # pylint: disable=invalid-name
+  def _model_fn(self, x, y):
     return models.get_rnn_model(self.rnn_size, self.cell_type, self.num_layers,
                                 self.input_op_fn, self.bidirectional,
                                 models.linear_regression, self.sequence_length,
-                                self.initial_state)(X, y)
+                                self.initial_state)(x, y)
 
   @property
   def bias_(self):
     """Returns bias of the rnn layer."""
-    return self.get_tensor_value('linear_regression/bias')
+    return self.get_variable_value('linear_regression/bias')
 
   @property
   def weights_(self):
     """Returns weights of the rnn layer."""
-    return self.get_tensor_value('linear_regression/weights')
+    return self.get_variable_value('linear_regression/weights')

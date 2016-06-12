@@ -1,4 +1,3 @@
-# pylint: disable=g-bad-file-header
 # Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -208,7 +207,7 @@ class GraphIOTest(tf.test.TestCase):
           filename, batch_size,
           reader=tf.TextLineReader, randomize_input=False,
           num_epochs=1, queue_capacity=queue_capacity, name=name)
-      session.run(tf.initialize_all_variables())
+      session.run(tf.initialize_local_variables())
 
       coord = tf.train.Coordinator()
       tf.train.start_queue_runners(session, coord=coord)

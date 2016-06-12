@@ -789,9 +789,23 @@ Returns `True` if and only if `tensor` is feedable.
 
 - - -
 
+#### `tf.Graph.is_fetchable(tensor_or_op)` {#Graph.is_fetchable}
+
+Returns `True` if and only if `tensor_or_op` is fetchable.
+
+
+- - -
+
 #### `tf.Graph.prevent_feeding(tensor)` {#Graph.prevent_feeding}
 
 Marks the given `tensor` as unfeedable in this graph.
+
+
+- - -
+
+#### `tf.Graph.prevent_fetching(op)` {#Graph.prevent_fetching}
+
+Marks the given `op` as unfetchable in this graph.
 
 
 
@@ -2531,6 +2545,7 @@ and computations occur. Using `DeviceSpec` allows you to parse device spec
 strings to verify their validity, merge them or compose them programmatically.
 
 Example:
+
 ```python
 # Place the operations on device "GPU:0" in the "ps" job.
 device_spec = DeviceSpec(job="ps", device_type="GPU", device_index=0)

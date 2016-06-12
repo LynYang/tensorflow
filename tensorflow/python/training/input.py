@@ -1,4 +1,4 @@
-# Copyright 2015 Google Inc. All Rights Reserved.
+# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -78,7 +78,9 @@ def limit_epochs(tensor, num_epochs=None, name=None):
     raise ValueError("num_epochs must be > 0 not %d." % num_epochs)
   with ops.op_scope([tensor], name, "limit_epochs") as name:
     zero64 = constant_op.constant(0, dtype=dtypes.int64)
-    epochs = variables.Variable(zero64, name="epochs", trainable=False)
+    epochs = variables.Variable(
+        zero64, name="epochs", trainable=False,
+        collections=ops.GraphKeys.LOCAL_VARIABLES)
     counter = epochs.count_up_to(num_epochs)
     with ops.control_dependencies([counter]):
       return array_ops.identity(tensor, name=name)

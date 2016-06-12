@@ -1,4 +1,4 @@
-# Copyright 2016 Google Inc. All Rights Reserved.
+# Copyright 2016 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ initialized with parameters that define the distributions.
 
 ### Univariate (scalar) distributions
 
+@@Categorical
 @@Chi2
 @@Exponential
 @@Gamma
@@ -55,6 +56,7 @@ from __future__ import print_function
 
 # pylint: disable=unused-import,wildcard-import,line-too-long
 
+from tensorflow.contrib.distributions.python.ops.categorical import *
 from tensorflow.contrib.distributions.python.ops.chi2 import *
 from tensorflow.contrib.distributions.python.ops.dirichlet_multinomial import *
 from tensorflow.contrib.distributions.python.ops.distribution import *

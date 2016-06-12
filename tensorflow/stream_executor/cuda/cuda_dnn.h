@@ -1,4 +1,4 @@
-/* Copyright 2015 Google Inc. All Rights Reserved.
+/* Copyright 2015 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace cuda {
 
 class CUDAExecutor;
 
-// Opaque and unique identifer for the cuDNN plugin.
+// Opaque and unique identifier for the cuDNN plugin.
 extern const PluginId kCuDnnPlugin;
 
 // cudnn-library based DNN support. For details on overridden interface
@@ -201,6 +201,13 @@ class CudnnSupport : public dnn::DnnSupport {
                      const dnn::BatchDescriptor& output_dimensions,
                      DeviceMemory<float>* output_data) override;
 
+  bool DoPoolForward(Stream* stream,
+                     const dnn::PoolingDescriptor& pooling_dimensions,
+                     const dnn::BatchDescriptor& input_dimensions,
+                     const DeviceMemory<Eigen::half>& input_data,
+                     const dnn::BatchDescriptor& output_dimensions,
+                     DeviceMemory<Eigen::half>* output_data) override;
+
   bool DoPoolBackward(Stream* stream,
                       const dnn::PoolingDescriptor& pooling_dimensions,
                       const dnn::BatchDescriptor& input_dimensions,
@@ -209,6 +216,15 @@ class CudnnSupport : public dnn::DnnSupport {
                       const DeviceMemory<float>& output_data,
                       const DeviceMemory<float>& input_diff_data,
                       DeviceMemory<float>* output_diff_data) override;
+
+  bool DoPoolBackward(Stream* stream,
+                      const dnn::PoolingDescriptor& pooling_dimensions,
+                      const dnn::BatchDescriptor& input_dimensions,
+                      const DeviceMemory<Eigen::half>& input_data,
+                      const dnn::BatchDescriptor& output_dimensions,
+                      const DeviceMemory<Eigen::half>& output_data,
+                      const DeviceMemory<Eigen::half>& input_diff_data,
+                      DeviceMemory<Eigen::half>* output_diff_data) override;
 
   bool DoNormalize(Stream* stream,
                    const dnn::NormalizeDescriptor& normalize_descriptor,
